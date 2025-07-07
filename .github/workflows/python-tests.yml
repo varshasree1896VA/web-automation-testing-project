@@ -1,0 +1,48 @@
+# 🔄 Next Step: CI/CD with GitHub Actions
+#GitHub Actions will automatically run your tests every time you push code or open a pull request. and real-world projects.
+#    Notes to know how git hub actions work and run to know and not forget later:
+# 🪜 Step-by-step in PyCharm:
+#✅ Right-click your project root folder → New → Directory → name it .github
+#
+#✅ Inside .github, create another folder: workflows
+#
+#✅ Inside workflows, create a new file: python-tests.yml
+#
+#✅ Paste this content inside:
+
+
+name: Run Selenium Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: ⬇️ Checkout code
+      uses: actions/checkout@v3
+
+    - name: 🐍 Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: 🔧 Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: 🚀 Run tests and generate report
+      run: |
+        pytest tests/ --html=reports/report.html --self-contained-html
+
+    - name: 📤 Upload test report
+      uses: actions/upload-artifact@v4
+      with:
+        name: html-report
+        path: reports/report.html
