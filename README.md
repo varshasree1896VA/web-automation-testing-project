@@ -42,6 +42,7 @@ web-automation-testing-project/
 ├── conftest.py
 ├── requirements.txt
 └── README.md
+```
 
 ✅ First test:
 
