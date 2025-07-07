@@ -23,7 +23,7 @@ def test_user_signup(browser):
     # Step 2: Fill signup form with name & email
     signup_page = SignupPage(browser)
     signup_page.enter_name("Test User")
-    email = generate_random_email()  # email I gave: projecttest@gmail.com
+    email = generate_random_email()  #  Random email each time
     print("✅ Email entered:", email)  # ✅ Add this line for debugging
     signup_page.enter_email(email)
     signup_page.click_signup_button()
@@ -71,3 +71,5 @@ def test_user_signup(browser):
 
     # Step 8: Take screenshot
     browser.save_screenshot("signup_complete.png")
+
+
