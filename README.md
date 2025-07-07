@@ -1,6 +1,6 @@
 # 🧪 Web Automation Testing Project – Selenium + PyTest
 
-A real-world automation project built from scratch to showcase end-to-end functional testing using **Selenium WebDriver**, **PyTest**, and **HTML reporting**. Designed with internship/job-readiness in mind.
+A real-world automation project built from scratch to showcase end-to-end functional testing using **Selenium WebDriver**, **PyTest**, and **HTML Reporting** — with real interview-useful practices like **screenshot capture**, **page object model**, **modular tests**, and **GitHub-ready documentation**.
 
 ---
 
@@ -9,9 +9,12 @@ A real-world automation project built from scratch to showcase end-to-end functi
 This project automates user flows on the [Automation Exercise website](https://automationexercise.com). It includes:
 
 - ✅ Sign-up test (account creation)
-- ✅ Login test (login + logout) *(to be added)*
-- ✅ Reusable fixtures via `conftest.py`
-- ✅ PyTest + HTML reports for professional output
+- ✅ Login test (with valid & invalid scenarios)
+- ✅ Logout test
+- ✅ Screenshot capture on test failures
+- ✅ Reusable browser fixture via `conftest.py`
+- ✅ Modular code using Page Object Model (POM)
+- ✅ HTML reports with `pytest-html`
 - ✅ Clean file structure following industry standards
 
 ---
@@ -39,131 +42,133 @@ web-automation-testing-project/
 ├── conftest.py
 ├── requirements.txt
 └── README.md
-```
 
-- ✅ First test:
-- Opened site, clicked “Signup/Login”
+✅ First test:
 
----
+Opened site, clicked “Signup/Login”
 
 ### 🔹 **Day 2 – Page Object Model (POM)**
-
 📁 _Goals: Clean code structure using POM_
 
-- ✅ Created `HomePage` and `SignupPage` under `pages/`
-- ✅ Separated test logic from locators
-- ✅ Built `test_signup.py`:
-- Filled name, email, clicked sign up
-- Validated "Enter Account Info" screen
-- ✅ Created `utils.py` for helper function:
+✅ Created `home_page.py`, `signup_page.py`, `login_page.py` `in pages/`
 
-```python
-def generate_random_email():
-    ...
-```
-### 🔹 Day 3 – Fixtures & Error Handling
-📁 Goals: Reusable browser setup + robust test flow
+✅ Separated element locators + logic from test code
 
-✅ Created conftest.py:
+✅ Created `test_signup.py`
 
-```python
-import pytest
-from selenium import webdriver
+✅ Created `utils.py` for helper functions
 
-@pytest.fixture
-def browser():
-    driver = webdriver.Chrome()
-    driver.maximize_window()
-    yield driver
-    driver.quit()
+###  🔹 **Day 3 – Fixtures & Error Handling**
+📁 *Goals: Reusable setup + stability*
 
-```
-✅ Used fixture in test:
-```python
-def test_user_signup(browser):
-    ...
+✅ Created `conftest.py` with browser setup/teardown fixture
 
+✅ Used `WebDriverWait` to avoid flaky tests
 
-```
+✅ Handled "Email already exists" and other edge cases
 
-✅ Error handling:
+### 🔹 **Day 4 – Reporting**
+📁 _Goals: Generate test execution reports_
 
-Checked if “Email already exists” before proceeding
-Used WebDriverWait() for stability
-
-### 🔹 Day 4 – Reporting & Polish
-📁 Goals: Polish, organize & generate reports
-
-✅ Generated HTML report:
+✅ Used pytest-html to generate reports:
 ```bash
-pytest tests/test_signup.py --html=reports/signup_report.html
+pytest tests/ --html=reports/report_<timestamp>.html
 
 ```
-✅ Structured tests:
+✅ Structured test folders & modularized page classes
 
-```text
-    tests/test_signup.py
-    pages/home_page.py
-    pages/signup_page.py
-    utils/utils.py
+###  🔹 **Day 5 – New Tests + Screenshot Capture**
+📁 _Goals: Add more _real_-world scenarios_
 
+✅ ✅ Invalid Login Test (user enters wrong credentials)
+
+✅ ✅ Logout Test (verify session ends)
+
+✅ ✅ Screenshot on Failure — any failed test now saves a screenshot with a timestamped filename in /screenshots/ folder:
+`/screenshots/` folder:
+```bash
+screenshots/
+├── test_invalid_login_20250707_131536.png
 ```
-✅ Created this README & ready for GitHub push
+🔧 Screenshot logic is placed in `conftest.py` via `pytest_runtest_makereport` hook:
+```python
+if report.when == "call" and report.failed:
+    screenshot_name = ...
+    driver.save_screenshot(...)
+```
+🔬 Technologies Used
+| Tool              | Purpose                       |
+| ----------------- | ----------------------------- |
+| Python            | Programming language          |
+| Selenium          | Browser automation            |
+| PyTest            | Test runner                   |
+| pytest-html       | HTML reporting                |
+| webdriver-manager | Automatic driver download     |
+| Git/GitHub        | Version control & CI/CD ready |
 
-🔍 Technologies Used
-| Tool         | Purpose                         |
-| ------------ | ------------------------------- |
-| Python       | Programming language            |
-| Selenium     | Browser automation              |
-| PyTest       | Test runner                     |
-| pytest-html  | Generate beautiful test reports |
-| ChromeDriver | Control Chrome for tests        |
-| Git/GitHub   | Version control & portfolio     |
-
-🗂️ Folder Structure
+🗂️ Project Structure
 ```text
 web-automation-testing-project/
 ├── pages/
 │   ├── home_page.py
-│   └── signup_page.py
+│   ├── signup_page.py
+│   └── login_page.py
 ├── tests/
-│   └── test_signup.py
+│   ├── test_signup.py
+│   ├── test_login.py
+│   ├── test_logout.py
+│   └── test_homepage.py   # includes invalid login
 ├── utils/
 │   └── utils.py
-├── conftest.py
+├── screenshots/
+│   └── test_invalid_login_<timestamp>.png
 ├── reports/
-│   └── signup_report.html
-├── README.md
-└── requirements.txt
-``` 
-
-📸 Sample Report
-Open any report from the reports/ folder in your browser, e.g.:
-```bash
-    /reports/signup_20250706_180553.html
-
+│   └── report_<timestamp>.html
+├── conftest.py
+├── requirements.txt
+└── README.md
 ```
-🚀 How to Run
+🚀 How to Run the Tests
 ```bash
-    # Install dependencies
+# Step 1: Install all dependencies
 pip install -r requirements.txt
 
-# Run test and generate report
+# Step 2: Run all tests and generate report
+pytest tests/ --html=reports/test_report.html
+
+# Optional: Run only a specific test file
 pytest tests/test_signup.py --html=reports/signup_report.html
-
 ```
+📸 Screenshot Handling
+Screenshots are automatically taken on test failures
 
-💡 Future Enhancements
-Add login/logout tests
+They are saved in the `/screenshots/` folder with test name + timestamp
 
-Use @pytest.mark.parametrize
+Example:
+```bash
+/screenshots/test_invalid_login_20250707_131536.png
+```
+✅ All Tests Covered So Far
+| Test Name       | File              | Status |
+| --------------- | ----------------- | ------ |
+| HomePage Load   | test\_homepage.py | ✅      |
+| Sign Up (Valid) | test\_signup.py   | ✅      |
+| Login (Valid)   | test\_login.py    | ✅      |
+| Login (Invalid) | test\_homepage.py | ✅      |
+| Logout          | test\_logout.py   | ✅      |
 
-Cross-browser testing (Firefox, Edge)
+🛠️ Future Enhancements
+⏳ Data-driven tests with `@pytest.mark.parametrize`
 
-CI/CD with GitHub Actions
+⏳ Docker container for isolated testing
 
-Dockerize for isolation
+✅ GitHub Actions for CI/CD (🔜 Next Step)
 
-🙋‍♀️ Author  
-**Varsha Sree Mirdoddi**  
-🔗 [LinkedIn](https://www.linkedin.com/in/varshasreemirdoddi/)
+⏳ Add screenshots to HTML report
+
+⏳ Cross-browser testing (Firefox, Edge)
+
+🙋‍♀️ Author
+Varsha Sree Mirdoddi:
+
+🔗 LinkedIn: https://www.linkedin.com/in/varshasreemirdoddi/

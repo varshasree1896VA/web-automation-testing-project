@@ -55,3 +55,4 @@ def test_invalid_login(browser):
     error = login_page.get_error_message()
 
     assert "incorrect" in error.lower()  # Error text should contain "incorrect"
+    #assert "Successful Login" in error.lower()  # ❌ On purpose wrong
